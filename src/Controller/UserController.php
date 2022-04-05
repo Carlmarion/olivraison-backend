@@ -4,13 +4,16 @@ namespace App\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
-use Symfony\App\Entity\User;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
+use App\Entity\User;
+use FOS\RestBundle\Controller\Annotations as Rest;
+
 
 class UserController extends AbstractController
 {
-    #[Route('/users', name: 'app_user')]
+    #[Rest\Get('/users')]
     public function index(): Response
     {
         return $this->json([
@@ -19,12 +22,13 @@ class UserController extends AbstractController
         ]);
     }
 
-    #[Route('/new/users' , name: 'create_user')]
-    public function createUser( ValidatoInterface $validator): Response
+    #[Rest\View]
+    #[Rest\Post("/user")]
+    #[ParamConverter("user", converter: "fos_rest.request_body")]
+    public function createUser(User $user)
     {
-        $user = new User();
 
-        $errors = $validator->validate($user);
+        $errors = $this->get('validator')->validate($user);
 
         if (count($errors) > 0) {
             $errorString = (string) $errors;
@@ -33,9 +37,7 @@ class UserController extends AbstractController
         }
         return new Response("inscription validée");
 
-        return $this->json([
-
-        ]);
+        
     }
 
 }
