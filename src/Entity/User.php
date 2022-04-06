@@ -31,28 +31,29 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\Column(type: 'string', length: 255)]
     #[Assert\NotBlank(
-        message: 'this field cannot be empty'
+        message: 'ce champ ne peut être vide'
     )]
     private $firstname;
 
     #[ORM\Column(type: 'string', length: 255)]
     #[Assert\NotBlank(
-        message: 'this field cannot be empty'
+        message: 'ce champ ne peut être vide'
     )]
     private $lastname;
 
 
     public static function loadValidatorMetadata(ClassMetaData $metadata)
     {
-        $metadata->addGetterConstraint('passwordSafe', new Assert\isTrue([
-            'message' => 'Votre mot de passe doit contenir au moins 8 charactères, une majuscule et un chiffre'
-        ]));
+        $metadata->addPropertyConstraint('password', new Assert\NotBlank(array(
+            'message' => 'Votre mot de passe ne peut être vide.',
+        )));
+
+        $metadata->addPropertyConstraint('password', new Assert\Regex(array(
+            'pattern' => '/^(?=.*[a-z])(?=.*\\d).{8,}$/i',
+            'message' => 'votre mot de passe doit contenir au minimum 8 charactères, une majuscule et un chiffre'
+        )));
     }
 
-    public function isPasswordsafe()
-    {
-        return $this->password == "^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$";
-    }
 
 
     public function getId(): ?int
