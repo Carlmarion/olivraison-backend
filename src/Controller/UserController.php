@@ -4,16 +4,13 @@ namespace App\Controller;
 
 use App\Entity\User;
 use App\Repository\UserRepository;
-use Doctrine\ORM\EntityManager;
-use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
-use FOS\RestBundle\Controller\Attributes\Get;
-use FOS\RestBundle\Controller\Attributes\View;
+
 
 
 
@@ -44,7 +41,7 @@ class UserController extends AbstractController
          return $this->json($errors, 400);
         }
         // On cherche si un user comportant le même email existe dans la DB 
-        $existingUser = $repo->findOneByEmail($user->getEmail());
+        $existingUser = $repo->findOneBy(['email' => $user->getEmail()]);
         // si cet user existe, on retourne un json() avec un message d'erreur et un message d'erreur HTTP 
         if($existingUser)
         {
@@ -60,18 +57,37 @@ class UserController extends AbstractController
     }
 
     #[Rest\View]
-    #[Rest\Get("/user/{id}")]
+    #[Rest\Get("/users/{id}")]
     public function showUser(int $id, UserRepository $repo): Response
     {
+        // return new Response(gettype($id));
+        
     
-       $existingUser = $repo->findOneBy($id);
+      $existingUser = $repo->findOneBy(['id' => $id]);
 
        if(!$existingUser)
        {
             return $this->json(['erreur' => 'L\'utilisateur que vous cherchez n\'existe pas'], 404);
        }
-         return $existingUser;
-      // return $repo->findOneBy($id)->get($user);
+         return $this->json($existingUser, 200) ;
+      
+    }
+
+    #[Rest\View]
+    #[Rest\Delete("/users/{id}")]
+    public function deleteUser(int $id, UserRepository $repo): Response
+    {
+        // return new Response(gettype($id));
+        
+    
+      $existingUser = $repo->findOneBy(['id' => $id]);
+
+       if($existingUser)
+       {
+           $repo->remove($existingUser);
+       }
+        return $this->json("success", 200) ;
+      
     }
 
 }
