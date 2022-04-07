@@ -6,6 +6,8 @@ use App\Repository\UserRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Validator\Mapping\ClassMetadata;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
@@ -16,6 +18,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private $id;
 
     #[ORM\Column(type: 'string', length: 180, unique: true)]
+    #[Assert\Email(
+        message: 'the email {{value}} is not a valid email'
+    )]
     private $email;
 
     #[ORM\Column(type: 'json')]
@@ -23,6 +28,33 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\Column(type: 'string')]
     private $password;
+
+    #[ORM\Column(type: 'string', length: 255)]
+    #[Assert\NotBlank(
+        message: 'ce champ ne peut être vide'
+    )]
+    private $firstname;
+
+    #[ORM\Column(type: 'string', length: 255)]
+    #[Assert\NotBlank(
+        message: 'ce champ ne peut être vide'
+    )]
+    private $lastname;
+
+
+    public static function loadValidatorMetadata(ClassMetaData $metadata)
+    {
+        $metadata->addPropertyConstraint('password', new Assert\NotBlank(array(
+            'message' => 'Votre mot de passe ne peut être vide.',
+        )));
+
+        $metadata->addPropertyConstraint('password', new Assert\Regex(array(
+            'pattern' => '/^(?=.*[a-z])(?=.*\\d).{8,}$/i',
+            'message' => 'votre mot de passe doit contenir au minimum 8 charactères, une majuscule et un chiffre'
+        )));
+    }
+
+
 
     public function getId(): ?int
     {
@@ -36,7 +68,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function setEmail(string $email): self
     {
-        $this->email = $email;
+        
+        $this->email = strtolower($email);
 
         return $this;
     }
@@ -57,8 +90,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function getRoles(): array
     {
         $roles = $this->roles;
-        // guarantee every user at least has ROLE_USER
-        $roles[] = 'ROLE_USER';
+        
 
         return array_unique($roles);
     }
@@ -92,5 +124,29 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         // If you store any temporary, sensitive data on the user, clear it here
         // $this->plainPassword = null;
+    }
+
+    public function getFirstname(): ?string
+    {
+        return $this->firstname;
+    }
+
+    public function setFirstname(string $firstname): self
+    {
+        $this->firstname = $firstname;
+
+        return $this;
+    }
+
+    public function getLastname(): ?string
+    {
+        return $this->lastname;
+    }
+
+    public function setLastname(string $lastname): self
+    {
+        $this->lastname = $lastname;
+
+        return $this;
     }
 }
