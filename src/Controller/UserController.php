@@ -31,27 +31,46 @@ class UserController extends AbstractController
     #[Rest\View]
     #[Rest\Post("/user")]
     #[ParamConverter("user", converter: "fos_rest.request_body")]
-    public function createUser(User $user, ValidatorInterface $validator, EntityManagerInterface $manager)
+    public function createUser(User $user, ValidatorInterface $validator, UserRepository $repo )
     {
-         
+    
+        // Validation des erreurs avec le bundle validator et la méthode validate() 
         $errors = $validator->validate($user);
-
-        if (count([$errors])) {
-            $errorString = (string) $errors;
-
-            return new Response($errorString);
+        // Si erreurs $errorstring = le texte des erreurs -> return le texte des erreurs, sinon retourne inscription validée.
+        if (count($errors) > 0) {
+            // on retourne les erreurs avec le protocole de message HTTP grâce a la petite methode magique json()
+         return $this->json($errors, 400);
         }
-            return "inscription validée";
-            
+        // On cherche si un user comportant le même email existe dans la DB 
+        $existingUser = $repo->findOneByEmail($user->getEmail());
+        // si cet user existe, on retourne un json() avec un message d'erreur et un message d'erreur HTTP 
+        if($existingUser)
+        {
+            return $this->json(['error' => 'Cet email existe déjà'], 400);
 
-       
-
+        }
         //faire persist l'user en BDD
-        $manager->persist($user);
-        $manager->flush();
-
-        return($user);
+        $repo->add($user);
+        // on retourne un json compprenant les informations de l'user et un message HTTP de succès. 
+        return $this->json($user, 200);
         
+        
+    }
+
+    #[Rest\View(statusCode:204)]
+    #[Rest\Get('/user/{userId}')]
+    #[ParamConverter("user", converter: "fos_rest.request_body")]
+    public function showUser($id,User $user, UserRepository $repo)
+    {
+    
+       $existingUser = $repo->findOneBy($id);
+
+       if(!$existingUser)
+       {
+            return $this->json(['erreur' => 'L\'utilisateur que vous cherchez n\'existe pas'], 404);
+       }
+         return $user;
+      // return $repo->findOneBy($id)->get($user);
     }
 
 }
