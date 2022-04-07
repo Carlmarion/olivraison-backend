@@ -12,6 +12,8 @@ use FOS\RestBundle\Controller\Annotations as Rest;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
+use FOS\RestBundle\Controller\Attributes\Get;
+use FOS\RestBundle\Controller\Attributes\View;
 
 
 
@@ -57,10 +59,9 @@ class UserController extends AbstractController
         
     }
 
-    #[Rest\View(statusCode:204)]
-    #[Rest\Get('/user/{userId}')]
-    #[ParamConverter("user", converter: "fos_rest.request_body")]
-    public function showUser($id,User $user, UserRepository $repo)
+    #[Rest\View]
+    #[Rest\Get("/user/{id}")]
+    public function showUser(int $id, UserRepository $repo): Response
     {
     
        $existingUser = $repo->findOneBy($id);
@@ -69,7 +70,7 @@ class UserController extends AbstractController
        {
             return $this->json(['erreur' => 'L\'utilisateur que vous cherchez n\'existe pas'], 404);
        }
-         return $user;
+         return $existingUser;
       // return $repo->findOneBy($id)->get($user);
     }
 
