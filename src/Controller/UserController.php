@@ -60,7 +60,7 @@ class UserController extends AbstractController
     #[Rest\Get("/users/{id}")]
     public function showUser(int $id, UserRepository $repo): Response
     {
-        // return new Response(gettype($id));
+    
         
     
       $existingUser = $repo->findOneBy(['id' => $id]);
@@ -77,7 +77,7 @@ class UserController extends AbstractController
     #[Rest\Delete("/users/{id}")]
     public function deleteUser(int $id, UserRepository $repo): Response
     {
-        // return new Response(gettype($id));
+        
         
     
       $existingUser = $repo->findOneBy(['id' => $id]);
