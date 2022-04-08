@@ -45,7 +45,7 @@ class UserController extends AbstractController
         // si cet user existe, on retourne un json() avec un message d'erreur et un message d'erreur HTTP 
         if($existingUser)
         {
-            return $this->json(['error' => 'Cet email existe déjà'], 400);
+            return $this->json(['error' => 'Email dejà utilisé'], 400);
 
         }
         //faire persist l'user en BDD
@@ -77,9 +77,7 @@ class UserController extends AbstractController
     #[Rest\Delete("/users/{id}")]
     public function deleteUser(int $id, UserRepository $repo): Response
     {
-        
-        
-    
+            
       $existingUser = $repo->findOneBy(['id' => $id]);
 
        if($existingUser)

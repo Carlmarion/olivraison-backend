@@ -6,7 +6,8 @@ use App\Repository\MagasinRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-
+use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Validator\Mapping\ClassMetadata;
 
 #[ORM\Entity(repositoryClass: MagasinRepository::class)]
 class Magasin
@@ -17,6 +18,9 @@ class Magasin
     private $id;
 
     #[ORM\Column(type: 'string', length: 255)]
+    #[Assert\NotBlank(
+        message: "ce champ ne peut être vide"
+    )]
     private $nom;
 
     #[ORM\OneToOne(targetEntity: User::class, cascade: ['persist', 'remove'])]
