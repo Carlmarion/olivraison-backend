@@ -10,6 +10,7 @@ use FOS\RestBundle\Controller\Annotations as Rest;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 
 
@@ -30,9 +31,11 @@ class UserController extends AbstractController
     #[Rest\View]
     #[Rest\Post("/user")]
     #[ParamConverter("user", converter: "fos_rest.request_body")]
-    public function createUser(User $user, ValidatorInterface $validator, UserRepository $repo )
+    public function createUser(User $user, ValidatorInterface $validator, UserRepository $repo)
     {
     
+
+        
         // Validation des erreurs avec le bundle validator et la méthode validate() 
         $errors = $validator->validate($user);
         // Si erreurs $errorstring = le texte des erreurs -> return le texte des erreurs, sinon retourne inscription validée.
@@ -40,6 +43,14 @@ class UserController extends AbstractController
             // on retourne les erreurs avec le protocole de message HTTP grâce a la petite methode magique json()
          return $this->json($errors, 400);
         }
+        // pour le test mdp: RockyBalboa0
+        $plainPassword = $user->getPassword();
+        $hashedPassword = password_hash($plainPassword, PASSWORD_DEFAULT);
+        $user->setPassword($hashedPassword);
+       
+
+
+
         // On cherche si un user comportant le même email existe dans la DB 
         $existingUser = $repo->findOneBy(['email' => $user->getEmail()]);
         // si cet user existe, on retourne un json() avec un message d'erreur et un message d'erreur HTTP 
