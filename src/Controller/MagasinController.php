@@ -43,24 +43,31 @@ class MagasinController extends AbstractController
     #[ParamConverter("magasin", converter: "fos_rest.request_body")]
     public function createMagasin(Magasin $magasin, ValidatorInterface $validator, MagasinRepository $repo, Request $request)
     {
-        // la FK dans magasin est user_id, quand je récupère $user, je recupère les variables de table user.
         
+        $errors = $validator->validate($magasin);
+        
+        if(count($errors) > 0)
+        {
+            return $this->json($errors, 400);
+        }
 
+        $existingMagasin = $repo->findOneBy(['nom' => $magasin->getNom()]);
+         
+        if($existingMagasin)
+        {
+            return $this->json(['error' => 'Nom de magasin dejà utilisé'], 400);
+
+        }
         $session = $request->getSession();
         $user = $session->get('userId');
-        print($user);
+        
 
-        //$errors = $validator->validate($magasin);
 
-        // if(count($errors) > 0)
-        // {
-        //     return $this->json($errors, 400);
-        // }
-        // $repo->add($magasin);
-        // print($user);
-        // print($magasin);
+        $repo->add($magasin);
 
-        return $this->json([$user], 200);
+        
+
+        return $this->json([$user,$magasin], 200);
 
     }
 

@@ -54,16 +54,18 @@ class SecurityController extends AbstractController
         }
 
 
+    }
     #[Rest\Post("/logout")]
     public function logout(Request $request)
     {
-            $user = $repo->getUser();
+            
             $session = $request->getSession();
-            $session->clear($user);
+            $session->clear();
+
+            return $this->json('deconnecté avec succès!', 200);
         
     }
 
 
         
-    }
 }
