@@ -25,14 +25,6 @@ class Adresse
     #[ORM\Column(type: 'string', length: 255)]
     private $code_postal;
 
-    #[ORM\OneToOne(targetEntity: Commande::class, cascade: ['persist', 'remove'])]
-    #[ORM\JoinColumn(nullable: false)]
-    private $commande;
-
-    #[ORM\OneToOne(targetEntity: Livraison::class, cascade: ['persist', 'remove'])]
-    #[ORM\JoinColumn(nullable: false)]
-    private $livraison;
-
     public function getId(): ?int
     {
         return $this->id;
@@ -86,27 +78,4 @@ class Adresse
         return $this;
     }
 
-    public function getCommande(): ?Commande
-    {
-        return $this->commande;
-    }
-
-    public function setCommande(Commande $commande): self
-    {
-        $this->commande = $commande;
-
-        return $this;
-    }
-
-    public function getLivraison(): ?Livraison
-    {
-        return $this->livraison;
-    }
-
-    public function setLivraison(Livraison $livraison): self
-    {
-        $this->livraison = $livraison;
-
-        return $this;
-    }
 }

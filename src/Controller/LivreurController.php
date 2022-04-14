@@ -27,7 +27,7 @@ class LivreurController extends AbstractController
 
 
     #[Rest\View]
-    #[Rest\Post("/livreurs")]
+    #[Rest\Post("livreurs")]
     #[ParamConverter("livreur", converter: "fos_rest.request_body")]
     public function createLivreur(Livreur $livreur, LivreurRepository $livreurRepo, UserRepository $userRepo, Request $request)
     {
@@ -45,7 +45,6 @@ class LivreurController extends AbstractController
         $livreur->setUser($user);
         $livreurRepo->add($livreur);
 
-        return $this->json([$livreur], 200);
     }
 
     #[Rest\View]

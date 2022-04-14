@@ -19,10 +19,13 @@ class Livraison
     #[ORM\Column(type: 'datetime', nullable: true)]
     private $date_livraison;
 
+    
+
     public function getId(): ?int
     {
         return $this->id;
     }
+
 
     public function getLivreur(): ?Livreur
     {

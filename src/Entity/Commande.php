@@ -17,11 +17,29 @@ class Commande
     private $date_commande;
 
     #[ORM\ManyToOne(targetEntity: Magasin::class, inversedBy: 'commandes')]
+    #[ORM\JoinColumn(nullable: false)]
     private $magasin;
+
+    #[ORM\OneToOne(targetEntity: Adresse::class, cascade: ["persist", "remove"])]
+    #[ORM\JoinColumn(nullable: false)]
+    private $adresseDestination;
+
 
     public function getId(): ?int
     {
         return $this->id;
+    }
+
+    public function getAdresse(): Adresse
+    {
+        return $this->adresseDestination;
+    }
+
+    public function setAdresse(Adresse $adresseDestination): self
+    {
+        $this->adresseDestination = $adresseDestination;
+        
+        return $this;
     }
 
     public function getDateCommande(): ?\DateTimeInterface

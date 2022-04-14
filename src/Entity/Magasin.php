@@ -30,6 +30,10 @@ class Magasin
     #[ORM\OneToMany(mappedBy: 'magasin', targetEntity: Commande::class)]
     private $commandes;
 
+    #[ORM\OneToOne(targetEntity: Adresse::class, cascade: ["persist", "remove"])]
+    #[ORM\JoinColumn(nullable: false)]
+    private $adresse;
+
     public function __construct()
     {
         $this->commandes = new ArrayCollection();
@@ -38,6 +42,18 @@ class Magasin
     public function getId(): ?int
     {
         return $this->id;
+    }
+
+    public function getAdresse(): Adresse
+    {
+        return $this->adresse;
+    }
+
+    public function setAdresse(Adresse $adresse): self
+    {
+        $this->adresse = $adresse;
+        
+        return $this;
     }
 
     public function getNom(): ?string
