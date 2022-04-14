@@ -27,8 +27,7 @@ class MagasinController extends AbstractController
     #[Rest\Get("/magasins/{id}")]
     public function showMagasin(int $id, MagasinRepository $repo)
     {
-        // on récupère le magasin, on récupère l'email du user via la variable $user dans magasin qui nous renvoie ce qu'on veut de l'entité user
-        // on retourne le magasin ainsi que l'email de l'user associé au magasin
+        
         $magasin = $repo->findOneBy(['id' => $id]);
         $existingUser = $magasin->getUser();
 
@@ -72,12 +71,6 @@ class MagasinController extends AbstractController
 
     }
     
-
-    #[Rest\Delete("/magasins/{id}")]
-    public function removeMagasin(MagasinRepository $repo)
-    {
-        $magasin = $repo->findOneBy([])
-    }
 
 
 }
