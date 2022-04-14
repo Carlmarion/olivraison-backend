@@ -3,6 +3,7 @@
 namespace App\Controller;
 use App\Entity\Magasin;
 use App\Repository\MagasinRepository;
+use App\Repository\UserRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
@@ -41,7 +42,7 @@ class MagasinController extends AbstractController
     #[Rest\View]
     #[Rest\Post("/magasins")]
     #[ParamConverter("magasin", converter: "fos_rest.request_body")]
-    public function createMagasin(Magasin $magasin, ValidatorInterface $validator, MagasinRepository $repo, Request $request)
+    public function createMagasin(Magasin $magasin, ValidatorInterface $validator, MagasinRepository $repo, UserRepository $userRepo, Request $request)
     {
         
         $errors = $validator->validate($magasin);
@@ -58,17 +59,24 @@ class MagasinController extends AbstractController
             return $this->json(['error' => 'Nom de magasin dejà utilisé'], 400);
 
         }
+
         $session = $request->getSession();
-        $user = $session->get('userId');
-        
-
-
+        $userId = $session->get('userId');
+        $user = $userRepo->findOneBy(['id' => $userId]);
+        $magasin->setUser($user);
         $repo->add($magasin);
 
         
 
-        return $this->json([$user,$magasin], 200);
+        return $this->json([$magasin], 200);
 
+    }
+    
+
+    #[Rest\Delete("/magasins/{id}")]
+    public function removeMagasin(MagasinRepository $repo)
+    {
+        $magasin = $repo->findOneBy([])
     }
 
 
