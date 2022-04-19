@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Repository\AdresseRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: AdresseRepository::class)]
 class Adresse
@@ -14,15 +15,27 @@ class Adresse
     private $id;
 
     #[ORM\Column(type: 'integer')]
+    #[Assert\NotBlank(
+        message: "ce champ ne peut être vide"
+    )]
     private $numero_rue;
 
     #[ORM\Column(type: 'string', length: 255)]
+    #[Assert\NotBlank(
+        message: "ce champ ne peut être vide"
+    )]
     private $rue;
 
     #[ORM\Column(type: 'string', length: 255)]
+    #[Assert\NotBlank(
+        message: "ce champ ne peut être vide"
+    )]
     private $ville;
 
     #[ORM\Column(type: 'string', length: 255)]
+    #[Assert\NotBlank(
+        message: "ce champ ne peut être vide"
+    )]
     private $code_postal;
 
     public function getId(): ?int

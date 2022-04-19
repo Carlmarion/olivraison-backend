@@ -23,7 +23,7 @@ class Magasin
     )]
     private $nom;
 
-    #[ORM\OneToOne(targetEntity: User::class, cascade: ['persist', 'remove'])]
+    #[ORM\OneToOne(targetEntity: User::class, mappedBy: 'magasin')]
     #[ORM\JoinColumn(nullable: false)]
     private $user;
 

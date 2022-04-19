@@ -3,14 +3,16 @@
 namespace App\Controller;
 
 use App\Entity\User;
+use App\Entity\Magasin;
 use App\Repository\UserRepository;
+use App\Repository\MagasinRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
-use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
+
 
 
 
@@ -99,6 +101,44 @@ class UserController extends AbstractController
       
     }
 
-    
+
+    #[Rest\View]
+    #[Rest\Post("/users/me/magasin")]
+    #[ParamConverter("magasin", converter: "fos_rest.request_body")]
+    public function createMagasin(Magasin $magasin, MagasinRepository $magasinRepo, UserRepository $userRepo, ValidatorInterface $validator, Request $request)
+    {
+        $errors = $validator->validate($magasin);
+        
+        if(count($errors) > 0)
+        {
+            return $this->json($errors, 400);
+        }
+
+        $existingMagasin = $magasinRepo->findOneBy(["id" => $magasin->getId()]);
+
+        if($existingMagasin)
+        {
+            return $this->json("magasin déjà existant!", 400);
+        }
+        //On recupere la session
+        $session = $request->getSession();
+        $userId = $session->get('userId');
+        // On retrouve l'user grace à son id et on assigne a la variable $user cet id 
+        $user = $userRepo->findOneBy(['id'=>$userId]);
+
+        // On retrouve le magasin grâce à son id et on l'assigne à $magasin (pas certain)
+        $magasin = $magasinRepo->findOneBy(['id'=>$magasin->getId()]);
+
+        //on set l'user de magasin avec $user de lentite user pareil on set le magasin de user avec $magasin
+        $user->setMagasin($magasin);
+        $magasin->setUser($user);
+        
+        // On ajoute le nouveau magasin
+        $magasinRepo->add($magasin);
+
+        return $this->json([$magasin], 200);
+    }
+
+
 
 }

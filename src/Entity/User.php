@@ -41,6 +41,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     )]
     private $lastname;
 
+    #[ORM\OneToOne(targetEntity: Magasin::class, inversedBy: 'user')]
+    #[ORM\JoinColumn(nullable: true)]
+    private $magasin;
+
 
     public static function loadValidatorMetadata(ClassMetaData $metadata)
     {
@@ -60,6 +64,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         return $this->id;
     }
+
 
     public function getEmail(): ?string
     {
@@ -148,5 +153,17 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->lastname = $lastname;
 
         return $this;
+    }
+
+    public function getMagasin(): ?Magasin
+    {
+        return $this->magasin;
+    }
+
+    public function setMagasin(Magasin $magasin): self
+    {
+        $this->magasin = $magasin;
+
+        return $this; 
     }
 }

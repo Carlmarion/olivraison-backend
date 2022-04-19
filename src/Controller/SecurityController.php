@@ -39,7 +39,7 @@ class SecurityController extends AbstractController
          return $this->json($errors, 400);
         }
 
-        $email = $login->getEmail();
+       
         //Try/catch pour les exceptions
         try // Dans le try on effectue le login, on recupere l'id de l'user on request la session, on set la session et on return l'user loggé avec un http 200
         {

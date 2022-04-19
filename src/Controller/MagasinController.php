@@ -38,38 +38,38 @@ class MagasinController extends AbstractController
           return $this->json([$magasin, $existingUser]) ;
     }
 
-    #[Rest\View]
-    #[Rest\Post("/magasins")]
-    #[ParamConverter("magasin", converter: "fos_rest.request_body")]
-    public function createMagasin(Magasin $magasin, ValidatorInterface $validator, MagasinRepository $repo, UserRepository $userRepo, Request $request)
-    {
+    // #[Rest\View]
+    // #[Rest\Post("/magasins")]
+    // #[ParamConverter("magasin", converter: "fos_rest.request_body")]
+    // public function createMagasin(Magasin $magasin, ValidatorInterface $validator, MagasinRepository $repo, UserRepository $userRepo, Request $request)
+    // {
         
-        $errors = $validator->validate($magasin);
+    //     $errors = $validator->validate($magasin);
         
-        if(count($errors) > 0)
-        {
-            return $this->json($errors, 400);
-        }
+    //     if(count($errors) > 0)
+    //     {
+    //         return $this->json($errors, 400);
+    //     }
 
-        $existingMagasin = $repo->findOneBy(['nom' => $magasin->getNom()]);
+    //     $existingMagasin = $repo->findOneBy(['nom' => $magasin->getNom()]);
          
-        if($existingMagasin)
-        {
-            return $this->json(['error' => 'Nom de magasin dejà utilisé'], 400);
+    //     if($existingMagasin)
+    //     {
+    //         return $this->json(['error' => 'Nom de magasin dejà utilisé'], 400);
 
-        }
+    //     }
 
-        $session = $request->getSession();
-        $userId = $session->get('userId');
-        $user = $userRepo->findOneBy(['id' => $userId]);
-        $magasin->setUser($user);
-        $repo->add($magasin);
+    //     $session = $request->getSession();
+    //     $userId = $session->get('userId');
+    //     $user = $userRepo->findOneBy(['id' => $userId]);
+    //     $magasin->setUser($user);
+    //     $repo->add($magasin);
 
         
 
-        return $this->json([$magasin], 200);
+    //     return $this->json([$magasin], 200);
 
-    }
+    // }
     
 
 
