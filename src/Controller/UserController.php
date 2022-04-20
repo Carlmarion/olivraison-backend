@@ -120,21 +120,14 @@ class UserController extends AbstractController
         {
             return $this->json("magasin déjà existant!", 400);
         }
-        //On recupere la session
+       
         $session = $request->getSession();
         $userId = $session->get('userId');
-        // On retrouve l'user grace à son id et on assigne a la variable $user cet id 
         $user = $userRepo->findOneBy(['id'=>$userId]);
-
-        // On retrouve le magasin grâce à son id et on l'assigne à $magasin (pas certain)
-        $magasin = $magasinRepo->findOneBy(['id'=>$magasin->getId()]);
-
-        //on set l'user de magasin avec $user de lentite user pareil on set le magasin de user avec $magasin
-        $user->setMagasin($magasin);
         $magasin->setUser($user);
-        
-        // On ajoute le nouveau magasin
         $magasinRepo->add($magasin);
+        
+        
 
         return $this->json([$magasin], 200);
     }
