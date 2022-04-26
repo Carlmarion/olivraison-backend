@@ -8,31 +8,33 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\Mapping\ClassMetadata;
+use Symfony\Component\Serializer\Annotation\Groups;
+
+
 
 #[ORM\Entity(repositoryClass: MagasinRepository::class)]
 class Magasin
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
+    #[Groups("commande")]
     #[ORM\Column(type: 'integer')]
     private $id;
 
-    #[ORM\Column(type: 'string', length: 255, unique: true)]
+    #[ORM\Column(type: 'string', length: 255)]
     #[Assert\NotBlank(
         message: "ce champ ne peut être vide"
     )]
     private $nom;
 
-    #[ORM\OneToOne(targetEntity: User::class, mappedBy: 'magasin', cascade: ["persist", "remove"])]
-    #[ORM\JoinColumn(nullable: false)]
-    private $user;
-
-    #[ORM\OneToMany(mappedBy: 'magasin', targetEntity: Commande::class)]
-    private $commandes;
 
     #[ORM\OneToOne(targetEntity: Adresse::class, cascade: ["persist", "remove"])]
     #[ORM\JoinColumn(nullable: false)]
     private $adresse;
+
+    #[Groups("commande")]
+    #[ORM\OneToMany( targetEntity: Commande::class, mappedBy: 'magasin', cascade:  ["persist", "remove"] )]
+    private $commandes;
 
     public function __construct()
     {
@@ -68,18 +70,6 @@ class Magasin
         return $this;
     }
 
-    public function getUser(): ?User
-    {
-        return $this->user;
-    }
-
-    public function setUser(User $user): self
-    {
-        $this->user = $user;
-
-        return $this;
-    }
-
     /**
      * @return Collection<int, Commande>
      */
@@ -109,4 +99,5 @@ class Magasin
 
         return $this;
     }
+
 }

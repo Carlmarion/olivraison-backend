@@ -1,14 +1,19 @@
 <?php
 
 namespace App\Controller;
+
+use DateTime;
+use App\Entity\Adresse;
 use App\Entity\Magasin;
-use App\Repository\MagasinRepository;
+use App\Entity\Commande;
 use App\Repository\UserRepository;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\Response;
+use App\Repository\MagasinRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 
 class MagasinController extends AbstractController
@@ -23,53 +28,35 @@ class MagasinController extends AbstractController
     }
 
 
-    #[Rest\View]
-    #[Rest\Get("/magasins/{id}")]
-    public function showMagasin(int $id, MagasinRepository $repo)
-    {
-        
-        $magasin = $repo->findOneBy(['id' => $id]);
-        $existingUser = $magasin->getUser();
+    
 
-        if(!$magasin)
+    #[Rest\View( serializerGroups : ["commande", "magasin_details"])]
+    #[Rest\Post("/commandes")]
+    #[ParamConverter("commande", converter: "fos_rest.request_body")]
+    public function createCommande(Commande $commande, UserRepository $repo, Request $request, ValidatorInterface $validator, EntityManagerInterface $em)
+    {
+        $errors = $validator->validate($commande); // $commande validation of the payload
+
+        if(count($errors)>0)
         {
-             return $this->json(['erreur' => 'Le magasin que vous cherchez n\'existe pas'], 404);
+            return $this->json($errors, 400);
         }
-          return $this->json([$magasin, $existingUser]) ;
+
+        $session = $request->getSession();
+        $userId = $session->get("userId");
+        $user = $repo->findOneBy(["id"=>$userId]); // getting user from userId logged into the session. 
+
+        
+        $magasin = $user->getMagasin(); // get the magasin 
+        $adresse = $commande->getAdresse();
+        $commande->setAdresse($adresse);
+        $magasin->addCommande($commande);
+        $em->flush();
+
+        //return $this->json($commande, 200);
+        return $commande;
     }
 
-    // #[Rest\View]
-    // #[Rest\Post("/magasins")]
-    // #[ParamConverter("magasin", converter: "fos_rest.request_body")]
-    // public function createMagasin(Magasin $magasin, ValidatorInterface $validator, MagasinRepository $repo, UserRepository $userRepo, Request $request)
-    // {
-        
-    //     $errors = $validator->validate($magasin);
-        
-    //     if(count($errors) > 0)
-    //     {
-    //         return $this->json($errors, 400);
-    //     }
-
-    //     $existingMagasin = $repo->findOneBy(['nom' => $magasin->getNom()]);
-         
-    //     if($existingMagasin)
-    //     {
-    //         return $this->json(['error' => 'Nom de magasin dejà utilisé'], 400);
-
-    //     }
-
-    //     $session = $request->getSession();
-    //     $userId = $session->get('userId');
-    //     $user = $userRepo->findOneBy(['id' => $userId]);
-    //     $magasin->setUser($user);
-    //     $repo->add($magasin);
-
-        
-
-    //     return $this->json([$magasin], 200);
-
-    // }
     
 
 

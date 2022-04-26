@@ -41,7 +41,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     )]
     private $lastname;
 
-    #[ORM\OneToOne(targetEntity: Magasin::class, inversedBy: 'user', cascade: ["persist", "remove"])]
+    #[ORM\OneToOne(targetEntity: Magasin::class, cascade: ["persist", "remove"])]
     #[ORM\JoinColumn(nullable: true)]
     private $magasin;
 

@@ -105,7 +105,7 @@ class UserController extends AbstractController
     #[Rest\View]
     #[Rest\Post("/users/me/magasin")]
     #[ParamConverter("magasin", converter: "fos_rest.request_body")]
-    public function createMagasin(Magasin $magasin, MagasinRepository $magasinRepo, UserRepository $userRepo, ValidatorInterface $validator, Request $request)
+    public function createMagasin(Magasin $magasin, UserRepository $userRepo, ValidatorInterface $validator, Request $request)
     {
         $errors = $validator->validate($magasin);
         
@@ -113,23 +113,19 @@ class UserController extends AbstractController
         {
             return $this->json($errors, 400);
         }
-
-        $existingMagasin = $magasinRepo->findOneBy(["id" => $magasin->getId()]);
-
-        if($existingMagasin)
-        {
-            return $this->json("magasin déjà existant!", 400);
-        }
        
         $session = $request->getSession();
         $userId = $session->get('userId');
         $user = $userRepo->findOneBy(['id'=>$userId]);
-        $magasin->setUser($user);
-        $magasinRepo->add($magasin);
         
+        if(!$user->getMagasin())
+        {
+            $user->setMagasin($magasin);
+            $userRepo->add($user);
+            return $this->json([$magasin], 200);
+        }
         
 
-        return $this->json([$magasin], 200);
     }
 
 
