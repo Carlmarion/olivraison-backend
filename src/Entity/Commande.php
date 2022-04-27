@@ -4,8 +4,8 @@ namespace App\Entity;
 
 use App\Repository\CommandeRepository;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Validator\Constraints as Assert;
-use Symfony\Component\Serializer\Annotation\Groups;
+use JMS\Serializer\Annotation\Exclude;
+use Symfony\Config\JmsSerializerConfig;
 
 
 #[ORM\HasLifecycleCallbacks]
@@ -13,9 +13,9 @@ use Symfony\Component\Serializer\Annotation\Groups;
 class Commande
 {
 
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
-    #[Groups("commande")]
     #[ORM\Column(type: 'integer')]
     private $id;
 
@@ -30,8 +30,8 @@ class Commande
     #[ORM\Column(type: 'datetime_immutable')]
     private $createdAt;
 
-    #[Groups("magasin_detail")]
     #[ORM\ManyToOne(targetEntity: Magasin::class, inversedBy: 'commandes')]
+    #[Exclude()]
     private $magasin;
 
     

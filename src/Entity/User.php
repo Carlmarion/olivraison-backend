@@ -23,7 +23,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     )]
     private $email;
 
-    #[ORM\Column(type: 'json')]
+    #[ORM\Column(type: 'json', nullable: true)]
+
     private $roles = [];
 
     #[ORM\Column(type: 'string')]

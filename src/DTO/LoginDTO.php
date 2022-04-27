@@ -2,8 +2,10 @@
 
 namespace App\DTO;
 
+use JMS\Serializer\Annotation\Type;
 use Symfony\Component\Validator\Constraints as Assert;
-use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
+
+
 
 
 class LoginDTO
@@ -12,11 +14,13 @@ class LoginDTO
     #[Assert\NotBlank(
         message: 'ce champ ne peut être vide'
     )]
+    #[Type()]
     private $email;
 
     #[Assert\NotBlank(
         message: 'ce champ ne peut être vide'
     )]
+    #[Type()]
     private $password;
     
 

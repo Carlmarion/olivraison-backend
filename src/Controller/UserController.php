@@ -20,24 +20,12 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 
 class UserController extends AbstractController
 {
-    #[Rest\Get('/users')]
-    public function index(Request $request): Response
-    {
-
-        return $this->json([
-            'message' => 'Welcome to your new controller!',
-            'path' => 'src/Controller/UserController.php',
-        ]);
-    }
 
     #[Rest\View]
     #[Rest\Post("/user")]
     #[ParamConverter("user", converter: "fos_rest.request_body")]
     public function createUser(User $user, ValidatorInterface $validator, UserRepository $repo)
     {
-    
-
-        
         // Validation des erreurs avec le bundle validator et la méthode validate() 
         $errors = $validator->validate($user);
         // Si erreurs $errorstring = le texte des erreurs -> return le texte des erreurs, sinon retourne inscription validée.
@@ -50,9 +38,6 @@ class UserController extends AbstractController
         $hashedPassword = password_hash($plainPassword, PASSWORD_DEFAULT);
         $user->setPassword($hashedPassword);
        
-
-
-
         // On cherche si un user comportant le même email existe dans la DB 
         $existingUser = $repo->findOneBy(['email' => $user->getEmail()]);
         // si cet user existe, on retourne un json() avec un message d'erreur et un message d'erreur HTTP 
@@ -73,8 +58,6 @@ class UserController extends AbstractController
     #[Rest\Get("/users/{id}")]
     public function showUser(int $id, UserRepository $repo): Response
     {
-    
-        
     
       $existingUser = $repo->findOneBy(['id' => $id]);
 

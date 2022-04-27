@@ -8,7 +8,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\Mapping\ClassMetadata;
-use Symfony\Component\Serializer\Annotation\Groups;
+
 
 
 
@@ -17,7 +17,6 @@ class Magasin
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
-    #[Groups("commande")]
     #[ORM\Column(type: 'integer')]
     private $id;
 
@@ -32,7 +31,6 @@ class Magasin
     #[ORM\JoinColumn(nullable: false)]
     private $adresse;
 
-    #[Groups("commande")]
     #[ORM\OneToMany( targetEntity: Commande::class, mappedBy: 'magasin', cascade:  ["persist", "remove"] )]
     private $commandes;
 
