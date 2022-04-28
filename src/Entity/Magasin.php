@@ -71,7 +71,7 @@ class Magasin
     /**
      * @return Collection<int, Commande>
      */
-    public function getCommandes(): Collection
+    public function getCommandes(): ?Collection
     {
         return $this->commandes;
     }

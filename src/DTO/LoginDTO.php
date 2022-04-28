@@ -14,13 +14,13 @@ class LoginDTO
     #[Assert\NotBlank(
         message: 'ce champ ne peut être vide'
     )]
-    #[Type()]
+    #[Type("string")]
     private $email;
 
     #[Assert\NotBlank(
         message: 'ce champ ne peut être vide'
     )]
-    #[Type()]
+    #[Type("string")]
     private $password;
     
 

@@ -71,6 +71,32 @@ class MagasinController extends AbstractController
 
     }
     
+    #[Rest\View]
+    #[Rest\Get("/commandes")]
+    public function showAllCommandes(UserRepository $repo, Request $request)
+    {
+        $session = $request->getSession();
+        $userId = $session->get('userId');
+        $user = $repo->findOneBy(['id'=>$userId]);
 
+        // select * from user where id = "user_id";
+        // select magasin.id AS magasin_id, user.id, user.magasin_id from magasin join user on magasin_id = user.magasin_id where user.id = "user_id"; 
+        // select commande.id from commande join magasin on commande.magasin_id = magasin.id join user on user.magasin_id = magasin.id where user.id = "user_id"; 
+
+        $magasin = $user->getMagasin();
+        $commandes = $magasin->getCommandes();
+
+        if(!$commandes)
+        {
+            return $this->json("il semblerait qu'il n'y ait pas de commande", 400);
+        }
+        return $commandes;
+    }
+
+
+    #[Rest\View]
+    #[Rest\Post("/livraisons")]
+    #[ParamConverter("livraison", converter: "fos_rest.request_body")]
+    public function createLivraison(Livraison $livraison, Request $request, CommandeRepository $commandeRepo, MagasinRepository $magasinRepo)
 
 }

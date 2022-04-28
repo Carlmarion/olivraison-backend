@@ -45,6 +45,8 @@ class LivreurController extends AbstractController
         $livreur->setUser($user);
         $livreurRepo->add($livreur);
 
+        return $livreur;
+
     }
 
     #[Rest\View]
@@ -59,6 +61,6 @@ class LivreurController extends AbstractController
             return $this->json(["error","le compte de livreur que vous cherchez n\'existe pas"], 400);
         }
 
-        return $this->json([$livreur, $existingLivreur], 200);
+        return $existingLivreur;
     }
 }

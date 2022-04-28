@@ -65,7 +65,7 @@ class UserController extends AbstractController
        {
             return $this->json(['erreur' => 'L\'utilisateur que vous cherchez n\'existe pas'], 404);
        }
-         return $this->json($existingUser, 200) ;
+         return $existingUser;
       
     }
 
@@ -94,7 +94,7 @@ class UserController extends AbstractController
         
         if(count($errors) > 0)
         {
-            return $this->json($errors, 400);
+            return $errors;
         }
        
         $session = $request->getSession();
@@ -105,7 +105,7 @@ class UserController extends AbstractController
         {
             $user->setMagasin($magasin);
             $userRepo->add($user);
-            return $this->json([$magasin], 200);
+            return $magasin;
         }
         
 
