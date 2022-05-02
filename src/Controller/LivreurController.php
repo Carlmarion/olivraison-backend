@@ -3,14 +3,15 @@
 namespace App\Controller;
 
 use App\Entity\Livreur;
-use App\Repository\LivreurRepository;
+use App\Entity\Livraison;
 use App\Repository\UserRepository;
-use Symfony\Component\Validator\Validator\ValidatorInterface;
+use App\Repository\LivreurRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use FOS\RestBundle\Controller\Annotations as Rest;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 
 
@@ -62,5 +63,19 @@ class LivreurController extends AbstractController
         }
 
         return $existingLivreur;
+    }
+
+    #[Rest\view]
+    #[Rest\Get("\livraisons")]
+    public function showLivraisons(LivreurRepository $repo, Request $request)
+    {
+        $session = $request->getSession();
+        $userId = $session->get('userId');
+        $user = $repo->findOneBy(['id'=>$userId]);
+
+        $livraison = $user->getLivraisons();
+
+        return $livraison;
+        
     }
 }

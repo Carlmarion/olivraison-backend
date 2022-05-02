@@ -14,11 +14,25 @@ class Livraison
     private $id;
 
     #[ORM\ManyToOne(targetEntity: Livreur::class, inversedBy: 'livraisons')]
+    #[ORM\JoinColumn(nullable: true)]
     private $livreur;
 
     #[ORM\Column(type: 'datetime', nullable: true)]
     private $date_livraison;
 
+    #[ORM\OneToOne(inversedBy: 'livraison', targetEntity: Commande::class, cascade: ['persist', 'remove'])]
+    #[ORM\JoinColumn(nullable: false)]
+    private $commande;
+
+
+    #[ORM\PrePersist]
+    #[ORM\PreUpdate]
+    public function updateTimeStamps(): void
+    {    
+    if ($this->getDateLivraison() === null) {
+        $this->setDateLivraison(new \DateTimeImmutable('now'));
+    }
+    }
     
 
     public function getId(): ?int
@@ -47,6 +61,18 @@ class Livraison
     public function setDateLivraison(?\DateTimeInterface $date_livraison): self
     {
         $this->date_livraison = $date_livraison;
+
+        return $this;
+    }
+
+    public function getCommande(): ?Commande
+    {
+        return $this->commande;
+    }
+
+    public function setCommande(Commande $commande): self
+    {
+        $this->commande = $commande;
 
         return $this;
     }

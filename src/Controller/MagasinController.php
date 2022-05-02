@@ -6,9 +6,10 @@ use DateTime;
 use App\Entity\Adresse;
 use App\Entity\Magasin;
 use App\Entity\Commande;
-use App\Repository\CommandeRepository;
+use App\Entity\Livraison;
 use App\Repository\UserRepository;
 use App\Repository\MagasinRepository;
+use App\Repository\CommandeRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -94,9 +95,25 @@ class MagasinController extends AbstractController
     }
 
 
-    #[Rest\View]
-    #[Rest\Post("/livraisons")]
-    #[ParamConverter("livraison", converter: "fos_rest.request_body")]
-    public function createLivraison(Livraison $livraison, Request $request, CommandeRepository $commandeRepo, MagasinRepository $magasinRepo)
+    // #[Rest\View]
+    // #[Rest\Post("/livraisons")]
+    // #[ParamConverter("livraison", converter: "fos_rest.request_body")]
+    // public function createLivraison(int $id, Livraison $livraison, Request $request, CommandeRepository $commandeRepo, EntityManagerInterface $em)
+    // {
+    //     $commande = $commandeRepo->findOneBy(['id'=>$id]);
+    //     $magasin = $commande->getMagasin();
+
+    //     $adresseMagasin = $magasin->getAdresse();
+    //     $adresseCommande = $commande->getAdresse();
+
+        
+    //     $em->flush();
+
+    //     return ([$livraison,$adresseCommande,$adresseMagasin]);
+    // }
+
+
+    // méthode deleteLivraison()
+
 
 }
