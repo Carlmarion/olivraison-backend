@@ -2,6 +2,7 @@
 
 namespace App\Repository;
 
+use App\Entity\Livraison;
 use App\Entity\Livreur;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\OptimisticLockException;
@@ -44,6 +45,29 @@ class LivreurRepository extends ServiceEntityRepository
             $this->_em->flush();
         }
     }
+
+
+    // public function nextAvailableLivreur(LivraisonRepository $livraison): void
+    // {
+    //     $livraisonNull = $livraison->getDateLivraison();
+
+    //     return $this->createQueryBuilder('livreur')
+    //         ->andWhere('livreur.livraisons')
+
+
+    // }
+
+    public function findNextAvailableLivreur()
+   {
+     // select un livreur parmi les livreurs dont le nombre de livraisons "à faire"(date_livraison = null) est inférieur à 7
+    return $this->createQueryBuilder('livreur')
+        ->leftJoin(Livraison::class,'livraison')
+        ->andWhere('livraison.date_livraison = :val')
+        ->setParameter('val', NULL)
+        ->getQuery()
+        ->getResult()
+        ;
+   }
 
     // /**
     //  * @return Livreur[] Returns an array of Livreur objects

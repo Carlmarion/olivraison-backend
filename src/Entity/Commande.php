@@ -34,10 +34,9 @@ class Commande
     #[Exclude()]
     private $magasin;
 
-    #[ORM\OneToOne(mappedBy: 'commande', targetEntity: Livraison::class, cascade: ['persist', 'remove'])]
+    #[ORM\OneToOne(inversedBy: 'commande', targetEntity: Livraison::class, cascade: ['persist', 'remove'])]
+    #[ORM\JoinColumn(nullable: true)]
     private $livraison;
-
-    
 
     #[ORM\PrePersist]
     #[ORM\PreUpdate]
@@ -65,8 +64,6 @@ class Commande
         
         return $this;
     }
-
-
 
     public function getUpdatedAt(): ?\DateTimeImmutable
     {
@@ -109,15 +106,12 @@ class Commande
         return $this->livraison;
     }
 
-    public function setLivraison(Livraison $livraison): self
+    public function setLivraison(?Livraison $livraison): self
     {
-        // set the owning side of the relation if necessary
-        if ($livraison->getCommande() !== $this) {
-            $livraison->setCommande($this);
-        }
-
         $this->livraison = $livraison;
 
         return $this;
     }
+
+
 }

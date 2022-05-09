@@ -20,9 +20,9 @@ class Livraison
     #[ORM\Column(type: 'datetime', nullable: true)]
     private $date_livraison;
 
-    #[ORM\OneToOne(inversedBy: 'livraison', targetEntity: Commande::class, cascade: ['persist', 'remove'])]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\OneToOne(mappedBy: 'livraison', targetEntity: Commande::class, cascade: ['persist', 'remove'])]
     private $commande;
+
 
 
     #[ORM\PrePersist]
@@ -70,10 +70,21 @@ class Livraison
         return $this->commande;
     }
 
-    public function setCommande(Commande $commande): self
+    public function setCommande(?Commande $commande): self
     {
+        // unset the owning side of the relation if necessary
+        if ($commande === null && $this->commande !== null) {
+            $this->commande->setLivraison(null);
+        }
+
+        // set the owning side of the relation if necessary
+        if ($commande !== null && $commande->getLivraison() !== $this) {
+            $commande->setLivraison($this);
+        }
+
         $this->commande = $commande;
 
         return $this;
     }
+
 }
