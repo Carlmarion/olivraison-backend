@@ -74,4 +74,9 @@ class Livreur
 
         return $this;
     }
+
+    public function getLivraisonsCount(): int
+    {
+        return count($this->getLivraisons());
+    }
 }

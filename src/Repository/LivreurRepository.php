@@ -57,17 +57,17 @@ class LivreurRepository extends ServiceEntityRepository
 
     // }
 
-    public function findNextAvailableLivreur()
-   {
-     // select un livreur parmi les livreurs dont le nombre de livraisons "à faire"(date_livraison = null) est inférieur à 7
-    return $this->createQueryBuilder('livreur')
-        ->leftJoin(Livraison::class,'livraison')
-        ->andWhere('livraison.date_livraison = :val')
-        ->setParameter('val', NULL)
-        ->getQuery()
-        ->getResult()
-        ;
-   }
+//     public function findNextAvailableLivreur()
+//    {
+//      // select un livreur parmi les livreurs dont le nombre de livraisons "à faire"(date_livraison = null) est inférieur à 7
+//     return $this->createQueryBuilder('livreur')
+//         ->leftJoin(Livraison::class,'livraison')
+//         ->andWhere('livraison.date_livraison = :val')
+//         ->setParameter('val', NULL)
+//         ->getQuery()
+//         ->getResult()
+//         ;
+//    }
 
     // /**
     //  * @return Livreur[] Returns an array of Livreur objects
